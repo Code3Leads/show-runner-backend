@@ -61,4 +61,3 @@ def simulate_call():
     )
 
     return "Simulation Complete", 200
-
