@@ -36,5 +36,3 @@ def run_demo():
 def triggert():
     run_demo()
     return "Demo Ran"
-
-app.run()
