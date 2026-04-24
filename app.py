@@ -4,11 +4,14 @@ import time
 from datetime import datetime
 from twilio.rest import Client
 import os 
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 API_TOKEN = os.environ.get("API_TOKEN")
 USER_KEY = os.environ.get("USER_KEY")
+API_KEY = os.getenv("API_KEY")
 account_sid = os.environ.get("TWILIO_SID")
 auth_token = os.environ.get("TWILIO_AUTH")
 TWILIO_NUMBER = "+14439125624"
@@ -83,6 +86,12 @@ def run_demo():
 @app.route("/simulate-call", methods=["POST"])
 def simulate_call():
     try:
+        print(f"[DEBUG] Incoming API KEY: {request.headers.get('x-api-key')}")
+        print(f"[DEBUG] Expected API KEY: {API_KEY}")
+
+        if request.headers.get("x-api-key") != API_KEY:
+            return {"error": "Unauthorized"}, 403
+        
         # Support JSON + form data
         data = request.get_json(silent=True) or request.form
 
