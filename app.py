@@ -186,6 +186,14 @@ Message:
 
         send_alert(lead_message, "💰 New Website Lead")
 
+        # 📲 Auto-confirmation text
+        if phone and phone != "Unknown":
+
+            send_sms(
+                phone,
+                "Thanks for contacting Code 3 Leads. We've received your request and will review it shortly. If you need immediate assistance, call or text (443) 222-9649. Reply STOP to opt out."
+            )
+
         print(lead_message)
 
         return {
