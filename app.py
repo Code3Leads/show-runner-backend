@@ -5,16 +5,19 @@ from datetime import datetime
 from twilio.rest import Client
 import os 
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-API_TOKEN = os.environ.get("API_TOKEN")
-USER_KEY = os.environ.get("USER_KEY")
+PUSHOVER_APP_TOKEN = os.getenv("PUSHOVER_APP_TOKEN")
+PUSHOVER_USER_KEY = os.getenv("PUSHOVER_USER_KEY")
 API_KEY = os.getenv("API_KEY")
 account_sid = os.environ.get("TWILIO_SID")
 auth_token = os.environ.get("TWILIO_AUTH")
-TWILIO_NUMBER = "+18776185630"
+TWILIO_NUMBER = "+14432229649"
 
 client = Client(account_sid, auth_token)
 
@@ -25,16 +28,20 @@ def send_alert(message, title="Show Runner"):
     try:
         print(f"[ALERT] {title} - {message}")
 
-        requests.post(
+        response = requests.post(
             "https://api.pushover.net/1/messages.json",
             data={
-                "token": API_TOKEN,
-                "user": USER_KEY,
+                "token": PUSHOVER_APP_TOKEN,
+                "user": PUSHOVER_USER_KEY,
                 "title": title,
                 "message": message
             },
             timeout=5
         )
+
+        print("PUSHOVER STATUS:", response.status_code)
+        print("PUSHOVER RESPONSE:", response.text)
+
     except Exception as e:
         print(f"[ERROR] Pushover failed: {e}")
 
@@ -96,7 +103,7 @@ def simulate_call():
         data = request.get_json(silent=True) or request.form
 
         name = data.get("name", "John Smith")
-        number = data.get("number", "+14105551234")
+        number = data.get("number", "+14432229649")
         service = data.get("service", "General Inquiry")
 
         # Normalize phone number
@@ -148,8 +155,65 @@ def trigger_demo():
     return "Demo Ran", 200
 
 # =========================
+# 📋 WEBSITE LEAD FORM
+# =========================
+@app.route("/lead", methods=["POST"])
+def website_lead():
+
+    try:
+
+        data = request.get_json()
+
+        name = data.get("name", "Unknown")
+        business = data.get("business", "Unknown")
+        phone = data.get("phone", "Unknown")
+        service = data.get("service", "Unknown")
+        message = data.get("message", "")
+
+        lead_message = f"""
+🚨 NEW WEBSITE LEAD
+
+Name: {name}
+Business: {business}
+Phone: {phone}
+
+Interested In:
+{service}
+
+Message:
+{message}
+"""
+
+        send_alert(lead_message, "💰 New Website Lead")
+
+        print(lead_message)
+
+        return {
+            "status": "success"
+        }, 200
+
+    except Exception as e:
+
+        print(f"[LEAD ERROR] {e}")
+
+        return {
+            "status": "error",
+            "message": str(e)
+        }, 500
+
+# =========================
 # 🏠 HEALTH CHECK
 # =========================
 @app.route("/")
 def home():
     return "Show Runner Backend LIVE", 200
+
+# =========================
+# ▶ START SERVER
+# =========================
+if __name__ == "__main__":
+    app.run(
+        debug=True,
+        host="0.0.0.0",
+        port=5000
+    )
