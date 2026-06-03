@@ -171,13 +171,11 @@ def website_lead():
         message = data.get("message", "")
 
         lead_message = f"""
-🚨 NEW WEBSITE LEAD
-
 Name: {name}
 Business: {business}
 Phone: {phone}
 
-Interested In:
+Service:
 {service}
 
 Message:
