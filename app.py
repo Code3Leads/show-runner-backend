@@ -184,7 +184,10 @@ Message:
 {message}
 """
 
-        send_alert(lead_message, "💰 New Website Lead")
+        send_alert(
+            lead_message, 
+            f" 🚨 New Lead - {service}"
+        )
 
         # 📲 Auto-confirmation text
         if phone and phone != "Unknown":
