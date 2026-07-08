@@ -31,27 +31,29 @@ API_KEY = os.getenv("API_KEY")
 TWILIO_SID = os.getenv("TWILIO_SID")
 TWILIO_AUTH = os.getenv("TWILIO_AUTH")
 
+# Default Code 3 Leads number
+# Used for generic/demo routes only.
 TWILIO_NUMBER = "+14432229649"
 
-client = Client(TWILIO_SID, TWILIO_AUTH)
+twilio = Client(TWILIO_SID, TWILIO_AUTH)
 
 # =========================
 # SEND SMS
 # =========================
 
-def send_sms(to, message):
+def send_sms(from_number, to_number, message):
 
     try:
 
-        print(f"[SMS] Sending to {to}")
+        print(f"[SMS] {from_number} ➜ {to_number}")
 
-        msg = client.messages.create(
+        msg = twilio.messages.create(
 
             body=message,
 
-            from_=TWILIO_NUMBER,
+            from_=from_number,
 
-            to=to
+            to=to_number
 
         )
 
@@ -112,12 +114,14 @@ def simulate_call():
 
         sms_sent = send_sms(
 
-            number,
+    TWILIO_NUMBER,
 
-            f"Hey {name}, sorry we missed your call. "
-            f"What can we help you with?"
+    number,
 
-        )
+    f"Hey {name}, sorry we missed your call. "
+    f"What can we help you with?"
+
+)
 
         return {
 
@@ -173,7 +177,20 @@ def website_lead():
             }, 400
 
         # -------------------------
-        # Build Lead Message
+        # Normalize Customer Phone
+        # -------------------------
+
+        if phone != "Unknown" and not phone.startswith("+"):
+
+            phone = "+1" + (
+                phone.replace("-", "")
+                     .replace(" ", "")
+                     .replace("(", "")
+                     .replace(")", "")
+            )
+
+        # -------------------------
+        # Log Lead
         # -------------------------
 
         lead_message = f"""
@@ -204,13 +221,20 @@ Message:
 
         send_sms(
 
+            client["twilio_number"],
+
             client["owner_phone"],
 
             f"""
 🚨 NEW WEBSITE LEAD
 
+Business:
+{client["business_name"]}
+
+Customer:
 {name}
 
+Phone:
 {phone}
 
 Email:
@@ -219,6 +243,7 @@ Email:
 Service:
 {service}
 
+Message:
 {message}
 """
 
@@ -231,6 +256,8 @@ Service:
         if phone != "Unknown":
 
             send_sms(
+
+                client["twilio_number"],
 
                 phone,
 

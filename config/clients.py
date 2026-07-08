@@ -27,7 +27,7 @@ CLIENTS = {
 
         "owner_phone": "+13023646445",
 
-        "business_phone": "+13023646445",
+        "twilio_number": "+13023646445",
 
         "customer_confirmation":
             "Thanks for contacting M.R. Interiors! We've received your request and will contact you shortly. If your project is urgent, call (302) 364-6455. Reply STOP to opt out."
