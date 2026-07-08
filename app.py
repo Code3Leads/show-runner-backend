@@ -215,6 +215,12 @@ Message:
 
         print(lead_message)
 
+        print("========== CLIENT DEBUG ==========")
+        print(client)
+        print(f"Owner Phone: {client['owner_phone']}")
+        print(f"Twilio Number: {client['twilio_number']}")
+        print("==================================")
+
         # -------------------------
         # Notify Business Owner
         # -------------------------
