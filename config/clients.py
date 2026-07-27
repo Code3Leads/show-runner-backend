@@ -12,7 +12,7 @@ CLIENTS = {
 
         "owner_phone": "+14432229649",
 
-        "business_phone": "+14432229649",
+        "twilio_number": "+14432229649",
 
         "customer_confirmation":
             "Thanks for contacting Code 3 Leads. We've received your request and will review it shortly. Reply STOP to opt out."
