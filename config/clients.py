@@ -10,7 +10,7 @@ CLIENTS = {
 
         "owner_name": "Joseph Koslosky",
 
-        "owner_phone": "+14432229649",
+        "owner_phone": "+16106755381",
 
         "twilio_number": "+14432229649",
 
